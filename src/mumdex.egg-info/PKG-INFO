@@ -1,13 +1,15 @@
 Metadata-Version: 2.1
 Name: mumdex
 Version: 0.1.0
-Summary: Your package description
-Home-page: "http://mumdex.com"
-Author: "Peter Andrews @ CSHL"
-Author-email: "paa@drpa.us"
+Summary: MUMdex python module
+Home-page: https://github.com/iossifovlab/mumdex
+Author: Boris Yamrom
+Author-email: yamrom.boris@gmail.com
+License: MIT
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: Linux
+Requires: cmake
 Requires: numpy
 Requires: sys
 Requires: os
