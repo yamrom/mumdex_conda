@@ -599,66 +599,86 @@ static PyTypeObject referenceType = {
 //
 
 struct MUMdex {
-  PyObject_HEAD
-  PyObject * directory;
-  Reference * reference;
-  const paa::MUMdex * data{nullptr};
-  const paa::OptionalSavers * savers{nullptr};
+    PyObject_HEAD
+    PyObject* directory;
+    Reference* reference;
+    const paa::MUMdex* data{nullptr};
+    const paa::OptionalSavers* savers{nullptr};
 };
 
-static PyObject * mumdex_new(PyTypeObject * type, PyObject * args,
-                             PyObject * kwds) {
-  // Read Arguments - MUMdex directory to load
-  char txt[] = "MUMdex_directory";
-  static char * kwlist[] = {txt, nullptr};
-  cerr << "A " << txt << "\n\n";
-  cerr << "B " << *kwlist << "\n\n";
-  PyObject * directory = nullptr;
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "S:mumdex new",
-                                   kwlist, &directory))
-    return nullptr;
+static PyObject* mumdex_new(PyTypeObject* type, PyObject* args,
+    PyObject* kwds) {
+    // Read Arguments - MUMdex directory to load
+    char txt[] = "MUMdex_directory";
+    static char* kwlist[] = { txt, nullptr };
+    PyObject* directory = nullptr;
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "O:mumdex new",
+        kwlist, &directory))
+        return nullptr;
 
-  // Allocate space for object
-  MUMdex * self = reinterpret_cast<MUMdex *>(type->tp_alloc(type, 0));
-  if (self != nullptr) {
-    // Set object fields
-    Py_INCREF(directory);
-    self->directory = directory;
-    try {
-      self->data = new paa::MUMdex(PyUnicode_AsUTF8(directory));
-    } catch (std::exception & e) {
-      Py_TYPE(self)->tp_free(reinterpret_cast<PyObject *>(self));
-      PyErr_SetString(PyExc_RuntimeError,
-                      (std::string("mumdex.MUMdex.new(): ") +
-                       e.what()).c_str());
-      return nullptr;
+    // Allocate space for object
+    MUMdex* self = reinterpret_cast<MUMdex*>(type->tp_alloc(type, 0));
+    if (self != nullptr) {
+        // Set object fields
+        Py_INCREF(directory);
+        self->directory = directory;
+		const char* directory_cstr = nullptr;
+        try {
+            if (PyBytes_Check(directory)) {
+                directory_cstr = PyBytes_AsString(directory);
+            }
+            else if (PyUnicode_Check(directory)) {
+                directory_cstr = PyUnicode_AsUTF8(directory);
+            }
+            else {
+                PyErr_SetString(PyExc_TypeError, "Directory must be a string");
+                self->ob_base.ob_type->tp_free(reinterpret_cast<PyObject*>(self));
+                return nullptr;
+            }
+
+            self->data = new paa::MUMdex(directory_cstr);
+        }
+        catch (std::exception& e) {
+            Py_DECREF(directory);
+            self->ob_base.ob_type->tp_free(reinterpret_cast<PyObject*>(self));
+            PyErr_SetString(PyExc_RuntimeError,
+                (std::string("mumdex.MUMdex.new(): ") +
+                    e.what()).c_str());
+            return nullptr;
+        }
+
+        try {
+            PyObject* ref_args = Py_BuildValue("(O)", self);
+            self->reference = reinterpret_cast<Reference*>(
+                PyObject_CallObject(reinterpret_cast<PyObject*>(
+                    &referenceType), ref_args));
+            Py_DECREF(ref_args);
+            if (self->reference == nullptr) return nullptr;
+        }
+        catch (std::exception& e) {
+            Py_DECREF(directory);
+            self->ob_base.ob_type->tp_free(reinterpret_cast<PyObject*>(self));
+            PyErr_SetString(PyExc_RuntimeError,
+                (std::string("mumdex.MUMdex.new() Reference: ")
+                    + e.what()).c_str());
+            return nullptr;
+        }
+	
+        try {
+            self->savers = new paa::OptionalSavers(directory_cstr,
+                self->data->n_pairs());
+        }
+        catch (std::exception& e) {
+            Py_DECREF(directory);
+            self->ob_base.ob_type->tp_free(reinterpret_cast<PyObject*>(self));
+            PyErr_SetString(PyExc_RuntimeError,
+                (std::string("mumdex.MUMdex.new() OptionalSavers: ")
+                    + e.what()).c_str());
+            return nullptr;
+        }
     }
-    try {
-      PyObject * ref_args = Py_BuildValue("(O)", self);
-      self->reference = reinterpret_cast<Reference *>(
-          PyObject_CallObject(reinterpret_cast<PyObject *>(
-              &referenceType), ref_args));
-      Py_DECREF(ref_args);
-      if (self->reference == nullptr) return nullptr;
-    } catch (std::exception & e) {
-      Py_TYPE(self)->tp_free(reinterpret_cast<PyObject *>(self));
-      PyErr_SetString(PyExc_RuntimeError,
-                      (std::string("mumdex.MUMdex.new() Reference: ")
-                       + e.what()).c_str());
-      return nullptr;
-    }
-    try {
-      self->savers = new paa::OptionalSavers(PyUnicode_AsUTF8(directory),
-                                             self->data->n_pairs());
-    } catch (std::exception & e) {
-      Py_TYPE(self)->tp_free(reinterpret_cast<PyObject *>(self));
-      PyErr_SetString(PyExc_RuntimeError,
-                      (std::string("mumdex.MUMdex.new() OptionalSavers: ")
-                       + e.what()).c_str());
-      return nullptr;
-    }
-  }
-  return reinterpret_cast<PyObject *>(self);
+
+    return reinterpret_cast<PyObject*>(self);
 }
 
 static void mumdex_dealloc(MUMdex * self) {
