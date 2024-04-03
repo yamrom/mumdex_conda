@@ -1576,7 +1576,7 @@ static PyObject * mappability_new(PyTypeObject * type, PyObject * args,
   Mappability * self = reinterpret_cast<Mappability *>(type->tp_alloc(type, 0));
   if (self != nullptr) {
     // Set object fields
-    self->fasta_file = PyUnicode_FromString(fasta_file);
+	self->fasta_file = PyUnicode_FromString(fasta_file);
     try {
       self->data = new paa::Mappability(fasta_file, true);
     } catch (std::exception & e) {

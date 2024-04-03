@@ -4,7 +4,7 @@ import sys
 import mumdex
 
 # Parse command line arguments
-mums = mumdex.MUMdex(bytes(sys.argv[1],'utf-8'))
+mums = mumdex.MUMdex(sys.argv[1])
 ref = mums.Reference()
 region = (0, mums.n_mums())
 if len(sys.argv) == 3:

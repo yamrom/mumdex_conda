@@ -4,13 +4,15 @@ from setuptools import setup, Extension, find_packages
 
 # Define the extension module
 extension = Extension('mumdex._mumdex',
-                       sources=['src/python_mumdex.cpp',
+                       sources=['python_mumdex.cpp',
                                 'src/files.cpp',
                                 'src/utility.cpp'],
                        include_dirs=['src'],
                        extra_compile_args=['-std=c++11',
+                                           '-g',
                                            '-pthread',
-                                           '-Isrc'])
+                                           '-Isrc',
+                                           '-fPIC'])
 
 setup(
     name='mumdex',

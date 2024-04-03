@@ -1,6 +1,7 @@
 LICENSE
 README.md
 pyproject.toml
+python_mumdex.cpp
 setup.cfg
 setup.py
 scripts/bridge_finder.py
@@ -16,7 +17,6 @@ scripts/show_mums.py
 scripts/test_python_mumdex.py
 scripts/test_python_mumdex.sh
 src/files.cpp
-src/python_mumdex.cpp
 src/utility.cpp
 src/mumdex/__init__.py
 src/mumdex.egg-info/PKG-INFO
