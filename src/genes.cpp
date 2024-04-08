@@ -238,7 +238,7 @@ AllJunctionCounts::AllJunctionCounts(const KnownGenes & genes,
 #endif
 
 }  // namespace paa
-int main() {
-  // Your program code here
-  return 0;
-}
+//int main() {
+//  // Your program code here
+//  return 0;
+//}

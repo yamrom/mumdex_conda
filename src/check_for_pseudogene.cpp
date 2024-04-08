@@ -11,8 +11,8 @@
 #include <fstream>
 #include <string>
 
-#include "error.h"
 #include "genes.h"
+#include "error.h"
 #include "mumdex.h"
 
 using std::exception;
@@ -99,3 +99,5 @@ int main(int argc, char* argv[]) try {
   cerr << "unknown exception was caught" << endl;
   return 1;
 }
+
+
