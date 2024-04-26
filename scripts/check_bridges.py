@@ -3,8 +3,11 @@
 import sys
 import mumdex
 
-sample=sys.argv[1]
-mumdex_dir="/data/safe/paa/analysis/mums/wg-output/samples/" + sample + "/mumdex"
+if len(sys.argv) < 8:
+    print("Usage: check_bridges.py <mumdex_dir> <chr1s> <pos1> <out1> <chr2s> <pos2> <out2>")
+    exit(1)
+    
+mumdex_dir=sys.argv[1]
 mums = mumdex.MUMdex(mumdex_dir)
 ref = mums.Reference() 
 
