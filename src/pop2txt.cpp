@@ -86,26 +86,42 @@ int main(int argc, char* argv[])  try {
 
   const string search_string{"popbridges."};
   const uint64_t found{input_name.find(search_string)};
+  //cerr << "found " << found << endl;
   if (found == string::npos) {
     throw Error("Problem searching input name for") << search_string;
   }
   const uint64_t found_pos{found + search_string.size()};
+  //cerr << "found_pos " << found_pos << endl;
+  
   if (found_pos == input_name.size()) {
     throw Error("input name missing extension");
   }
   const uint64_t end_pos{min(input_name.find(".txt", found_pos),
                              input_name.find(".bin", found_pos))};
+  //cerr << "end_pos " << end_pos << endl;
+  
   if (end_pos == string::npos) {
     throw Error("Could not find extension");
   }
   const string chromosome_string{input_name.substr(
       found_pos, end_pos - found_pos)};
-  const unsigned int chromosome{lookup[chromosome_string]};
-  cerr << "chromosome is " << chromosome << endl;
+  //cerr << "chromosome_string is " << chromosome_string << endl;
+  
+  const uint64_t dot_pos{chromosome_string.find(".")};
+  cerr << "dot_pos " << dot_pos  <<endl;
+  if (dot_pos == string::npos) {
+    throw Error("Could not find start-stop");
+  }
+	
+  const string chromosome_s{chromosome_string.substr(0, dot_pos)};
+  //cerr << "chromosome is " << chromosome_s << endl;
+  const unsigned int chromosome{lookup[chromosome_s]};
+
 
   if (input_type == "bin") {
     string output_name{input_name};
-    replace_substring(output_name, ".bin", ".txt");
+    output_name = replace_substring(output_name, ".bin", ".txt");
+	//cerr << "output_name " << output_name << endl;
     if (readable(output_name)) {
       throw Error("Output file already exists") << output_name;
     }
