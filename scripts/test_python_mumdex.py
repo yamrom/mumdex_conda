@@ -4,6 +4,7 @@ import sys
 import mumdex
 
 mums_dir = "/data/safe/paa/analysis/mums"
+mums_dir = "/mnt/wigclust20/data/safe/paa/analysis/mums"
 
 print(dir(mumdex))
 print()
