@@ -8,4 +8,5 @@ dist/
 src/mumdex/__pycache__/__init__.cpython-310.pyc
 src/mumdex/_mumdex.cpython-310-x86_64-linux-gnu.so
 src/mumdex/_mumdex.cpython-311-x86_64-linux-gnu.so
-
+src/mumdex.egg-info/PKG-INFO
+src/mumdex.egg-info/SOURCES.txt
