@@ -45,7 +45,8 @@ min_length = 40
 output_no_bridge_positions = False
 
 #output
-print("chr pos inout map Ac Al ichr ityp inv abc al bl amc aml bmc bml asc asl bsc bsl")
+#print("chr pos inout map Ac Al ichr ityp inv abc al bl amc aml bmc bml asc asl bsc bsl")
+print("chr pos inout Ac Al ichr ityp inv abc al bl amc aml bmc bml asc asl bsc bsl")
 for pos in range(start_pos, stop_pos):
     for out in range(0, 2):
         (anchor_counts, bridges) = \
@@ -57,13 +58,15 @@ for pos in range(start_pos, stop_pos):
                             bridge_counts["as"] > min_length and \
                             bridge_counts["bms"] > min_length and \
                             bridge_counts["ams"] > min_length):
-                print(chromosome, pos, out, mappa.inout(out, offset + pos), end=' ')
+                #print(chromosome, pos, out, mappa.inout(out, offset + pos), end=' ')
+                print(chromosome, pos, out, end=' ')                
                 print("{ac} {al}".format(**anchor_counts), end=' ')
                 print(ref.name(invariant[0]), invariant[1], invariant[2], end=' ')
                 print("{abc} {al} {bl} {amc} {ams} {bmc} {bms} {asc} {as} {bsc} {bs}".format(**bridge_counts))
 
         if output_no_bridge_positions and len(bridges) == 0:
-            print(chromosome, pos, out, mappa.inout(out, offset + pos), end=' ')
+            #print(chromosome, pos, out, mappa.inout(out, offset + pos), end=' ')
+            print(chromosome, pos, out, end=' ')
             print("{ac} {al}".format(**anchor_counts))
                 
 exit()
