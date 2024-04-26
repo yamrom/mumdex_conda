@@ -148,7 +148,7 @@ class MUMdex(_MUMdexC):
             low_pos = start_pos - max_read_length
         else:
             low_pos = 1
-        mum_range = self.range(start_chrom, low_pos, stop_chrom, stop_pos)    
+        mum_range = self.range_name(start_chrom, low_pos, stop_chrom, stop_pos)    
         ref = self.Reference()
         start_chrom_index = ref.index(start_chrom)
         stop_chrom_index = ref.index(stop_chrom)
