@@ -30,7 +30,7 @@ ref = mums.Reference()
 bed = []
 window_size = 10
 
-if len(sys.argv) > 3:
+if len(sys.argv) > 2:
     with open(sys.argv[2], 'r') as F:
         for l in F:
             chrom, pos1, pos2 = l.strip('\n\r').split('\t')
@@ -38,7 +38,7 @@ if len(sys.argv) > 3:
 
 data = np.zeros((len(bed), 21),dtype=int)
 pattern = ""
-if len(sys.argv) == 4:
+if len(sys.argv) > 3:
     pattern = sys.argv[3]
     
 buffer = []
@@ -120,5 +120,5 @@ for ind, v in enumerate(bed):
                                 if inv > -11 and inv < 11:
                                     data[ind, 10+inv] += 1
 
-np.save(f"inv_counts_{pattern}.npy", data)
+np.save(f"{pattern}.npy", data)
 
