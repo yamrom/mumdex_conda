@@ -36,7 +36,7 @@ if len(sys.argv) > 2:
             chrom, pos1, pos2 = l.strip('\n\r').split('\t')
             bed.append((chrom, int(pos1), int(pos2)))
 
-data = np.zeros((len(bed), 21),dtype=int)
+data = np.zeros((len(bed), 21))
 pattern = ""
 if len(sys.argv) > 3:
     pattern = sys.argv[3]
@@ -119,6 +119,10 @@ for ind, v in enumerate(bed):
                                 inv = compute_inv(m,read_mums[i,j][n+1])
                                 if inv > -11 and inv < 11:
                                     data[ind, 10+inv] += 1
+
+s = np.sum(data, axis=1).reshape((data.shape[0],1))
+data[np.where(s != 0)[0],:] = data[np.where(s != 0)[0],:]/s[np.where(s != 0)[0]]
+data = np.hstack((data, s))
 
 np.save(f"{pattern}.npy", data)
 
