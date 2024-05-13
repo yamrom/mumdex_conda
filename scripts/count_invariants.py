@@ -93,31 +93,16 @@ for ind, v in enumerate(bed):
     region = mums.range_str(r_string)
     
     # Avoid double-viewing pairs
-    pairs = set()
 
-    # Loop over mums in range
-    if log:
-        print(f"number of mum indices: {region[1] - region[0]}",
-              file=sys.stderr)
-    for i in range(region[0], region[1]):
+    pairs = set([mums.index(i)[0] for i in range(region[0], region[1])])
 
-        # Look at pair for mum
-        pm = mums.index(i)
-        p = pm[0]
-
-        # Only if pair not yet seen
-        if p in pairs: continue
-        pairs.add(p)
-        if log:
-            print(f"pair: {p}", file=sys.stderr)
+    for p in pairs:
         pair = mums.Pair(p)
 
         dupe = pair.dupe()
         bad_1 = pair.read_1_bad()
         bad_2 = pair.read_2_bad()
         if dupe:
-            if log:
-                print(f"{p} is dupe", file=sys.stderr)
             continue
         
         read_mums = defaultdict(list)
@@ -126,9 +111,7 @@ for ind, v in enumerate(bed):
         # accumulate them in array indexed by (read,flipped)
         
         for m in range(pair.mums_start(), pair.mums_stop()):
-            if log:
-                print(f"mums in pair: {pair.mums_stop() - pair.mums_start()}",
-                      file=sys.stderr)
+    
             mum = mums.MUM(m)
 
             if ref.name(mum.chromosome()) == chrom:
@@ -144,52 +127,36 @@ for ind, v in enumerate(bed):
                                                     length,
                                                     last_hit,
                                                     touches_end))
-            else:
-                if log:
-                    print(f"mums from different chromosome", file=sys.stderr)
-
+                
         for i in range(2):
             if (not i and bad_1) or (i and bad_2):
-                if log:
-                    print(f"bad read", file=sys.stderr)
                 continue
             for j in range(2):
                 # sort mums according their offset in read 
                 read_mums[i,j] = sorted(read_mums[i,j], key=lambda x: x[1])
                 n_mums = len(read_mums[i,j])
-
-                if n_mums:
-                    for n,m in enumerate(read_mums[i,j]):
-                        over, low, high = complete_overlap(window_size,
-                                                           pos1,
-                                                           pos2,
-                                                           m[0],
-                                                           m[1],
-                                                           m[2])
+                
+                for n,m in enumerate(read_mums[i,j]):
+            
+                    over, low, high = complete_overlap(window_size,
+                                                       pos1,
+                                                       pos2,
+                                                       m[0],
+                                                       m[1],
+                                                       m[2])
+            
+                    if over:
+                        data[ind, 10] += 1
                         
-                        if over:
-                            data[ind, 10] += 1
-                        
-                        if low and n > 0:
-                            inv = compute_inv(read_mums[i,j][n-1],m)
-                            if inv > -11 and inv < 11:
-                                data[ind,10+inv] += 1
-                            else:
-                                if log:
-                                    print(f"low inv: {inv}", file=sys.stderr)
-                        if high and n < n_mums-1:
-                            inv = compute_inv(m,read_mums[i,j][n+1])
-                            if inv > -11 and inv < 11:
-                                data[ind, 10+inv] += 1
-                            else:
-                                if log:
-                                    print(f"hight inv: {inv}", file=sys.stderr)
-                                
-                else:
-                    if log:
-                        print(f"no mums for ({i},{j}", file=sys.stderr)
-                    
+                    if low and n > 0:
+                        inv = compute_inv(read_mums[i,j][n-1],m)
+                        if inv > -11 and inv < 11:
+                            data[ind,10+inv] += 1
 
+                    if high and n < n_mums-1:
+                        inv = compute_inv(m,read_mums[i,j][n+1])
+                        if inv > -11 and inv < 11:
+                            data[ind, 10+inv] += 1
 
 for b,d in zip(bed,data):
     r_string=f"{b[0]}:{str(b[1])}-{str(b[2])}"

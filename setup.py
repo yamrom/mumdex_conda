@@ -30,12 +30,17 @@ setup(
              'scripts/chromosome_bridges.py',
              'scripts/load_counts.py',
              'scripts/mumdex2txt.py',
-             'scripts/count_invariants_bed.py',
+             'scripts/count_invariants.py',
+             'scripts/compare_count_invariants.py',
              'scripts/show_mums.py',
              'scripts/test_python_mumdex.py',
              'scripts/mapper.py',
              'scripts/sample_bridge_finder.sh',
              'scripts/bridge_tester.py'],
     packages=find_packages(),
+    classifiers=[
+        'Programming Language :: Python :: 3',
+        # Add more classifiers as needed
+    ],
     requires=['cmake', 'numpy', 'sys', 'os']
 )
