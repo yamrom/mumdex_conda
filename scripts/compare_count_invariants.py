@@ -17,36 +17,27 @@ def compute_p_complete(d):
 
 data = defaultdict()
 
-families = []
+families = set()
 
 for f in sys.argv[1:]:
     c = f.split('/')[-2].split('_')
-    fam = f"{c[0]}_{c[2]}"
-    families.append(fam)
-    fam_t = c[3]
+    fam = f"{c[0]}_{c[1]}_{c[2]}"
+    repeat =  f.split('/')[-1].split('.')[0]
+    families.add((fam,repeat))
+    sample = c[3]
     d = []
     with open(f, 'r') as F:
         d = np.array([l.strip('\n\r').split('\t')[1:]
                       for l in F.readlines()]).astype(int)
 
-    data[(fam, fam_t)] = compute_p_complete(d)
+    data[((fam,repeat),sample)] = compute_p_complete(d)
 
-results = defaultdict()
-
+print('\t'.join("famId type statistic pvalue df".split(' ')))
 
 for fam in families:
-    results[(fam)] = (stats.ttest_ind(data[(fam,'blood')],
+    res = stats.ttest_ind(data[(fam,'blood')],
                                       data[(fam,'tumor')],
-                                      equal_var=False),
-                      np.mean(data[(fam,'blood')]),
-                      np.std(data[(fam,'blood')]),
-                      np.mean(data[(fam,'tumor')]),
-                      np.std(data[(fam,'tumor')]))
-
-print('\t'.join("famId statistic pvalue df normal_mean normal_std tumor_mean tumor_std".split(' ')))
-
-for k,v in results.items():
-    out=f'{k}\t%.4f\t%g\t%.4f\t%.4f\t%.4f\t%.4f\t%.4f\t'
-    print(out % (v[0].statistic, v[0].pvalue, v[0].df, v[1], v[2], v[3], v[4]))
-
+                                      equal_var=False)
+    out=f'{fam[0]}\t{fam[1]}\t%.4f\t%g\t%.1f'
+    print(out % (res.statistic, res.pvalue, res.df))
     
