@@ -32,6 +32,7 @@ setup(
              'scripts/mumdex2txt.py',
              'scripts/count_invariants.py',
              'scripts/compare_count_invariants.py',
+             'scripts/compare_inv_counts_by_length_of_ms.py',
              'scripts/show_mums.py',
              'scripts/test_python_mumdex.py',
              'scripts/mapper.py',
