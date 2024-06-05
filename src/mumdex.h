@@ -205,6 +205,7 @@ class TReference {
       fasta_file_{fasta} {
       const std::string ref_bin_name{fasta + ".bin/ref.seq.bin"};
       if (readable(ref_bin_name)) {
+		this->~TReference();  // Call the destructor
         new (this) TReference{fasta, ReadFromBinary()};  // placement new
         return;
       }
@@ -220,6 +221,7 @@ class TReference {
           throw Error("problem closing output file") << ref_bin_name;
         ref.save(fasta, false);
       }
+	  this->~TReference();  // Call the destructor
       new (this) TReference{fasta};
     }
 
