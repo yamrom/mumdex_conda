@@ -7,7 +7,7 @@ find_package (Python COMPONENTS Interpreter Development)
 find_package (Python HINTS /mnt/wigclust23/data/safe/yamrom/work/miniconda3/envs/cmake)
 find_package(PythonLibs REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
-
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath-link,/mnt/wigclust23/data/safe/yamrom/work/miniconda3/envs/mumdex/lib")
 file(GLOB SRC_FILES "*.cpp")
 
 foreach (file ${SRC_FILES})
