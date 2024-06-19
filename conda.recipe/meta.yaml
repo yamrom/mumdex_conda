@@ -1,0 +1,25 @@
+# meta.yaml
+package:
+  name: mumdex_conda
+  version: "0.1"
+
+source:
+  path: https://github.com/yamrom/mumdex_conda.git
+
+build:
+  number: 0
+  script: python setup.py install
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake
+    - python
+  run:
+    - python
+
+about:
+  home: http://github.com/yourname/mumdex_conda.git
+  license: MIT
+  summary: A sample Python package with C++ extension
