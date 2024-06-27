@@ -9,11 +9,13 @@ from scipy import stats
 if len(sys.argv) <2:
     print('Usage: compare_count_invariants.py <list of count_invariants files>')
 
-def compute_p_complete(d,msl):
+
+def compute_p_complete(dm msl):
     # probability that the regeion is not destroyed
-    s = np.sum(d, axis=1)
-    idx = np.where(s != 0)[0]
-    return d[idx, 10]/s[idx], msl[idx]
+    s0 = np.sum(d[0], axis=1)
+    s1 = np.sum(d[1], axis=1)
+    idx = np.where(s0*s1 != 0)[0]
+    return d[0][idx, 10]/s0[idx],d[1][idx, 10]/s1[idx],msl[idx]
 
 data = defaultdict()
 ms = defaultdict() 
@@ -39,24 +41,23 @@ for f in sys.argv[1:]:
     assert min(msl) == 5
     assert max(msl) == 10
     d = np.array([x[1:] for x in d]).astype(int)
-
-    d,msl = compute_p_complete(d,msl)
     
     data[((fam,repeat),sample)] = d
-    ms[(fam,repeat),sample] = msl
+    ms[(fam,repeat)] = msl
     
 print('\t'.join("famId type pv_all, pv_5 pv_6 pv_7 pv_8 pv_9 pv_10".split(' ')))
 
 for fam in families:
     res = np.zeros((7))
-    res[0] = stats.ttest_ind(data[(fam,'blood')],
-                                      data[(fam,'tumor')],
+    d_blood, d_tumor, msl = compute_p_complete([data[(fam,'blood')],
+                                                data[(fam,'tumor')]],
+                                               ms[(fam)])
+    
+    res[0] = stats.ttest_ind(d_blood, d_tumor,
                                       equal_var=False).pvalue
     for k in range(5,11):
-        id1 = np.where(ms[(fam,'blood')] == k)[0]
-        id2 = np.where(ms[(fam,'tumor')] == k)[0]        
-        res[k-4] = stats.ttest_ind(data[(fam,'blood')][id1],
-                                      data[(fam,'tumor')][id2],
+        id = np.where(msl == k)[0]
+        res[k-4] = stats.ttest_ind(d_blood[id], d_tumor[id],
                                       equal_var=False).pvalue
         
     out=f'{fam[0]}\t{fam[1]}\t%g\t%g\t%g\t%g\t%g\t%g\t%g'

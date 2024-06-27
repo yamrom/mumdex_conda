@@ -15,13 +15,13 @@ extension = Extension('mumdex._mumdex',
                                            '-fPIC'])
 
 setup(
-    name='mumdex',
+    name='mumdex_conda',
     version='0.1.0',
     description="MUMdex python module",
     license="MIT",
     author="Boris Yamrom",
     author_email='yamrom.boris@gmail.com',
-    url='https://github.com/iossifovlab/mumdex',
+    url='https://github.com/yamrom/mumdex_conda',
     ext_modules=[extension],
     scripts=['scripts/test_python_mumdex.sh',
              'scripts/bridge_finder.py',
