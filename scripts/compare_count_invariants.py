@@ -35,10 +35,8 @@ for f in sys.argv[1:]:
 print('\t'.join("famId type statistic pvalue df".split(' ')))
 
 for fam in families:
-
-    res = stats.ttest_ind(compute_p_complete([data[(fam,'blood')],
-                                              data[(fam,'tumor')]]),
-                          equal_var=False)
+    a,b = compute_p_complete([data[(fam,'blood')], data[(fam,'tumor')]])
+    res = stats.ttest_ind(a, b, equal_var=False)
     out=f'{fam[0]}\t{fam[1]}\t%.4f\t%g\t%.1f'
     print(out % (res.statistic, res.pvalue, res.df))
     
