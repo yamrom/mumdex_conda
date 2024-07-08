@@ -10,8 +10,8 @@ if len(sys.argv) <2:
     print('Usage: compare_count_invariants.py <list of count_invariants files>')
 
 
-def compute_p_complete(dm msl):
-    # probability that the regeion is not destroyed
+def compute_p_complete(d, msl):
+    # probability that the region is not destroyed
     s0 = np.sum(d[0], axis=1)
     s1 = np.sum(d[1], axis=1)
     idx = np.where(s0*s1 != 0)[0]
@@ -45,10 +45,10 @@ for f in sys.argv[1:]:
     data[((fam,repeat),sample)] = d
     ms[(fam,repeat)] = msl
     
-print('\t'.join("famId type pv_all, pv_5 pv_6 pv_7 pv_8 pv_9 pv_10".split(' ')))
+print('\t'.join("famId type int_pv_all, ind_pv_5 ind_pv_6 ind_pv_7 ind_pv_8 ind_pv_9 ind_pv_10 rel_pv_all, rel_pv_5 rel_pv_6 rel_pv_7 rel_pv_8 rel_pv_9 rel_pv_10".split(' ')))
 
-for fam in families:
-    res = np.zeros((7))
+for fam in sorted(families):
+    res = np.zeros((14))
     d_blood, d_tumor, msl = compute_p_complete([data[(fam,'blood')],
                                                 data[(fam,'tumor')]],
                                                ms[(fam)])
@@ -59,7 +59,13 @@ for fam in families:
         id = np.where(msl == k)[0]
         res[k-4] = stats.ttest_ind(d_blood[id], d_tumor[id],
                                       equal_var=False).pvalue
+
+    res[7] = stats.ttest_rel(d_blood, d_tumor).pvalue
+
+    for k in range(5,11):
+        id = np.where(msl == k)[0]
+        res[k+3] = stats.ttest_rel(d_blood[id], d_tumor[id]).pvalue
         
-    out=f'{fam[0]}\t{fam[1]}\t%g\t%g\t%g\t%g\t%g\t%g\t%g'
+    out=f'{fam[0]}\t{fam[1]}\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g'
     print(out % tuple(res))
     
