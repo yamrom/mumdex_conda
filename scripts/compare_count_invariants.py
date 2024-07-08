@@ -32,11 +32,12 @@ for f in sys.argv[1:]:
 
     data[((fam,repeat),sample)] = d
 
-print('\t'.join("famId type statistic pvalue df".split(' ')))
+print('\t'.join("famId type statistic ttest_ind_pvalue df ttest_rel_pvalue".split(' ')))
 
-for fam in families:
+for fam in sorted(families):
     a,b = compute_p_complete([data[(fam,'blood')], data[(fam,'tumor')]])
-    res = stats.ttest_ind(a, b, equal_var=False)
-    out=f'{fam[0]}\t{fam[1]}\t%.4f\t%g\t%.1f'
-    print(out % (res.statistic, res.pvalue, res.df))
+    res1 = stats.ttest_ind(a, b, equal_var=False)
+    res2 = stats.ttest_rel(a, b)    
+    out=f'{fam[0]}\t{fam[1]}\t%.4f\t%g\t%.1f\t%g'
+    print(out % (res1.statistic, res1.pvalue, res1.df, res2.pvalue))
     
