@@ -21,6 +21,16 @@ find_package (Python COMPONENTS Interpreter Development)
 find_package(PythonLibs REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
+# Add compile options
+add_compile_options(-fPIC)
+
+# Add link options
+#add_link_options(-pic)
+
+# Ensure CMake is using the correct compiler
+#set(CMAKE_C_COMPILER "/mnt/wigclust23/data/safe/yamrom/work/miniconda3/envs/mumdex/bin/x86_64-conda-linux-gnu-gcc")
+#set(CMAKE_CXX_COMPILER "/mnt/wigclust23/data/safe/yamrom/work/miniconda3/envs/mumdex/bin/x86_64-conda-linux-gnu-g++")
+#message(STATUS "Variable 'CONDA_PREFIX' is defined and not empty: ${CONDA_PREFIX}")
 file(GLOB SRC_FILES "*.cpp")
 
 foreach (file ${SRC_FILES})
