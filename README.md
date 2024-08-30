@@ -1,5 +1,27 @@
 MUMdex python module
 
+How I created environment
+
+conda create -n mumdex_exp
+conda activate mumdex_ext
+mamba install -c conda-forge cmake
+mamba install -c bioconda -c conda-forge snakeobjects pandas ipython
+pip install snakemake-executor-plugin-cluster-sync
+conda env export >environment.yaml
+
+How I compiles c++
+
+cd Release
+ccmake ../src
+make
+
+How I added python code to the mumdex_exp
+
+python setup.py build
+python setupt.py install
+
+
+
 TODO:
 1. Test all python scripts.
 2. Create small size project that can be used for regression testing.
