@@ -9,7 +9,6 @@ extension = Extension('mumdex._mumdex',
                                 'src/utility.cpp'],
                        include_dirs=['src'],
                        extra_compile_args=['-std=c++11',
-                                           '-g',
                                            '-pthread',
                                            '-Isrc',
                                            '-fPIC'])
